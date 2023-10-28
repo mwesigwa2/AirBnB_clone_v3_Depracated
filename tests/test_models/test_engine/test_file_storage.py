@@ -107,3 +107,31 @@ class test_fileStorage(unittest.TestCase):
         from models.engine.file_storage import FileStorage
         print(type(storage))
         self.assertEqual(type(storage), FileStorage)
+     def test_get_method():
+    storage = FileStorage()
+    user = User()
+    user.id = "test_user_id"
+    storage.new(user)
+    storage.save()
+
+    retrieved_user = storage.get(User, "test_user_id")
+    assert retrieved_user is not None, "Object not found"
+    assert isinstance(retrieved_user, User), "Object is not an instance of User"
+
+    def test_count_method():
+    storage = FileStorage()
+    state = State()
+    city = City()
+    storage.new(state)
+    storage.new(city)
+    storage.save()
+
+    count_states = storage.count(State)
+    assert count_states == 1, "Count is incorrect for State objects"
+
+    count_all = storage.count()
+    assert count_all == 2, "Count for all objects is incorrect"
+
+if __name__ == "__main__":
+    test_get_method()
+    test_count_method()
