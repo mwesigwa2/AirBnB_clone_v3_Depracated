@@ -76,6 +76,32 @@ class DBStorage:
         Session = scoped_session(session_factory)
         self.__session = Session()
 
+   def get(self, cls, id):
+        """
+        Retrieve one object based on the class and its ID.
+        """
+        try:
+            obj = self.__session.query(cls).filter(cls.id == id).one()
+            return obj
+        except NoResultFound:
+            return None
+
+    def count(self, cls=None):
+        """
+        Count the number of objects in storage matching the given class.
+        """
+        if cls is None:
+            count = sum(self.__session.query(State).count(),
+                        self.__session.query(City).count(),
+                        self.__session.query(User).count(),
+                        self.__session.query(Place).count(),
+                        self.__session.query(Review).count(),
+                        self.__session.query(Amenity).count())
+        else:
+            if isinstance(cls, str):
+                cls = eval(cls)
+            count = self.__session.query(cls).count()
+        return count
     def close(self):
         """Close the working SQLAlchemy session."""
         self.__session.close()
